@@ -1,0 +1,15 @@
+{
+  "name": "node.js-crash-course",
+  "version": "1.0.0",
+  "description": "Node.js crash course code.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon --env-file=.env server2.js"
+  },
+  "author": "0a9a",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
