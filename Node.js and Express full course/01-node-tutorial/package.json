@@ -1,0 +1,18 @@
+{
+  "name": "node.js-and-express-full-course",
+  "version": "1.0.0",
+  "main": "1-intro.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "0a9a",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
