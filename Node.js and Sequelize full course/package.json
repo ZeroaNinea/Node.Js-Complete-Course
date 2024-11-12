@@ -1,0 +1,17 @@
+{
+  "name": "node.js-and-sequelize-full-course",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "0a9a",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "mysql2": "^3.10.2",
+    "sequelize": "^6.37.3",
+    "zlib": "^1.0.5"
+  }
+}
