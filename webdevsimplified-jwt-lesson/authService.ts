@@ -11,52 +11,51 @@ const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 
+let refreshTokens: string[] = [];
+
 declare module "express-serve-static-core" {
   interface Request {
     user: UserPayload | null;
   }
 }
 
-// const posts: Post[] = [
-//   {
-//     username: "Kyle",
-//     title: "Post 1",
-//   },
-//   {
-//     username: "Jim",
-//     title: "Post 2",
-//   },
-// ];
+app.post("/token", (req: Request, res: Response) => {
+  const refreshToken: string = req.body.token;
+  if (refreshToken === null) return res.sendStatus(401);
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
 
-// app.get("/posts", authenticateToken, (req: Request, res: Response) => {
-//   console.log(req.user, "This is the cat user's post.");
-//   res.json(posts.filter((post) => post.username === req.user?.name));
-// });
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    (err: VerifyErrors | null, user: UserPayload | undefined) => {
+      if (err) return res.sendStatus(403);
+      const accessToken: string | undefined = generateAccessToken({
+        name: user?.name,
+      });
+      res.json({ accessToken: accessToken });
+    }
+  );
+});
+
+app.delete("/logout", (req: Request, res: Response) => {
+  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+  res.sendStatus(204);
+});
 
 app.post("/login", (req: Request, res: Response) => {
   // Authenticate user.
 
-  const username = req.body.username;
-  const user = { name: username };
+  const username: string = req.body.username;
+  const user: { name: string } = { name: username };
 
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-  res.json({ accessToken: accessToken });
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+  refreshTokens.push(refreshToken);
+  res.json({ accessToken: accessToken, refreshToken: refreshToken });
 });
 
-function authenticateToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET as string,
-    (err: VerifyErrors | null, user: UserPayload | null) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
-      next();
-    }
-  );
+function generateAccessToken(user: UserPayload | undefined) {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15s" });
 }
 
 app.listen(4000);

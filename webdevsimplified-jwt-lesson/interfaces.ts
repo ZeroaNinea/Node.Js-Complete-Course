@@ -1,5 +1,5 @@
 export interface UserPayload {
-  name: string;
+  name: string | undefined;
 }
 
 export interface Post {
