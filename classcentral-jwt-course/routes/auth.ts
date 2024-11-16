@@ -3,6 +3,7 @@ import { User } from "../db";
 
 const { check, validationResult } = require("express-validator");
 const { users } = require("../db.ts");
+const bcryptjs = require("bcryptjs");
 
 const router = require("express").Router();
 
@@ -17,8 +18,7 @@ router.post(
       min: 6,
     }),
   ],
-  (req: Request, res: Response) => {
-    // console.log("Request body: ", req.body);
+  async (req: Request, res: Response) => {
     const { password, email } = req.body;
 
     // VALIDATED THE INPUT
@@ -32,8 +32,6 @@ router.post(
 
     // VALIDATE IF USER DOESN'T ALREADY EXIST
     let user = users.find((user: User) => {
-      // console.log("User email: ", user.email);
-      // console.log("Email: ", email);
       return user.email === email;
     });
 
@@ -47,8 +45,21 @@ router.post(
       });
     }
 
+    let hashedPassword = await bcryptjs.hash(password, 10);
+
+    users.push({
+      email,
+      password: hashedPassword,
+    });
+
+    console.log(hashedPassword);
+
     res.send("Validation Passed");
   }
 );
+
+router.get("/all", (req: Request, res: Response) => {
+  res.json(users);
+});
 
 module.exports = router;
