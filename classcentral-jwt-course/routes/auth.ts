@@ -72,6 +72,50 @@ router.post(
   }
 );
 
+router.post("/login", async (req: Request, res: Response) => {
+  const { password, email } = req.body;
+
+  let user = users.find((user: User) => {
+    return user.email === email;
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      errors: [
+        {
+          msg: "Invalid Credentials",
+        },
+      ],
+    });
+  }
+
+  let isMatch = await bcryptjs.compare(password, user.password);
+
+  if (!isMatch) {
+    return res.status(400).json({
+      errors: [
+        {
+          msg: "Invalid Credetials",
+        },
+      ],
+    });
+  }
+
+  const token = await jwt.sign(
+    {
+      email,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: 3600000,
+    }
+  );
+
+  res.json({
+    token,
+  });
+});
+
 router.get("/all", (req: Request, res: Response) => {
   res.json(users);
 });
