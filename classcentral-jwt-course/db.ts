@@ -3,6 +3,11 @@ export interface User {
   password: string;
 }
 
+export interface Post {
+  title: string;
+  content: string;
+}
+
 const users: User[] = [
   {
     email: "laithharb@hotmail.com",
@@ -10,4 +15,34 @@ const users: User[] = [
   },
 ];
 
-module.exports = { users };
+const publicPosts: Post[] = [
+  {
+    title: "Free Tips on Development",
+    content: "These are some tips.",
+  },
+  {
+    title: "Free Tips on Development",
+    content: "These are some tips.",
+  },
+  {
+    title: "Free Tips on Development",
+    content: "These are some tips.",
+  },
+];
+
+const privatePosts: Post[] = [
+  {
+    title: "Paid Tips on Development",
+    content: "These are some tips.",
+  },
+  {
+    title: "Paid Tips on Development",
+    content: "These are some tips.",
+  },
+  {
+    title: "Paid Tips on Development",
+    content: "These are some tips.",
+  },
+];
+
+module.exports = { users, publicPosts, privatePosts };
