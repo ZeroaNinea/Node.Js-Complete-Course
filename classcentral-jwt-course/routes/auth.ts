@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { User } from "../db";
 
+require("dotenv").config();
+
 const { check, validationResult } = require("express-validator");
 const { users } = require("../db.ts");
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const router = require("express").Router();
 
@@ -36,7 +39,7 @@ router.post(
     });
 
     if (user) {
-      res.status(400).json({
+      return res.status(400).json({
         errors: [
           {
             msg: "This user already exists.",
@@ -45,16 +48,27 @@ router.post(
       });
     }
 
-    let hashedPassword = await bcryptjs.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     users.push({
       email,
       password: hashedPassword,
     });
 
-    console.log(hashedPassword);
+    const token = await jwt.sign(
+      {
+        email,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: 3600000,
+      }
+    );
 
-    res.send("Validation Passed");
+    // console.log(hashedPassword);
+
+    // res.send("Validation Passed");
+    res.json({ token });
   }
 );
 
