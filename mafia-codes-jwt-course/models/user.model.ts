@@ -1,14 +1,14 @@
-const { Sequelize, DataTypes, Model } = require("sequelize");
+// const { Sequelize, DataTypes, Model } = require("sequelize");
 
-require("dotenv").config();
+// require("dotenv").config();
 
-const { DB_NAME, DB_USERNAME, DB_PASSWORD } = process.env;
+// const { DB_NAME, DB_USERNAME, DB_PASSWORD } = process.env;
 
-const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-  host: "localhost",
-  port: 3306,
-  dialect: "mysql",
-});
+// const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
+//   host: "localhost",
+//   port: 3306,
+//   dialect: "mysql",
+// });
 
 const User = sequelize.define("User", {
   email: {
@@ -31,13 +31,13 @@ User.sync()
     console.log("Error syncing the `User` table and model!");
   });
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection successful!");
-  })
-  .catch((err: Error) => {
-    console.log("Error connecting to database!");
-  });
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log("Connection successful!");
+//   })
+//   .catch((err: Error) => {
+//     console.log("Error connecting to database!");
+//   });
 
-module.exports = User;
+// module.exports = User;
