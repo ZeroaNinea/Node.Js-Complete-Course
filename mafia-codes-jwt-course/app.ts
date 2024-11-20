@@ -6,10 +6,12 @@ import express from "express";
 import morgan from "morgan";
 import createError from "http-errors";
 
-require("dotenv").config();
-require("./models/sync_models");
+import dotenv from "dotenv";
+dotenv.config();
 
-const AuthRoute = require("./routes/auth.route");
+import "./models/sync_models";
+
+import AuthRoute from "./routes/auth.route";
 
 const app = express();
 app.use(morgan("dev"));
