@@ -10,6 +10,7 @@ require("dotenv").config();
 const AuthRoute = require("./routes/auth.route");
 
 const app = express();
+app.use(morgan("dev"));
 
 app.get("/", async (req: Request, res: Response, next: NextFunction) => {
   res.send("Hello, World!");
@@ -19,10 +20,13 @@ app.use("/auth", AuthRoute);
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
   // The alternative method to create an error.
-  // const error: CustomError = new Error("The page is not found.");
-  // error.status = 404;
-  // next(error);
-  next(createError.NotFound("This route does not exist.")); // Create an error with `http-errors` module.
+  /*
+  const error: CustomError = new Error("The page is not found.");
+  error.status = 404;
+  next(error);
+  */
+  // Create an error with `http-errors` module.
+  next(createError.NotFound("This route does not exist."));
 });
 
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
