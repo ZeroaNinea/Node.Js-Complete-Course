@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 
 import { CustomError } from "./interfaces";
 
-const express = require("express");
-const morgan = require("morgan");
-const createError = require("http-errors");
+import express from "express";
+import morgan from "morgan";
+import createError from "http-errors";
+
 require("dotenv").config();
-require("./helpers/init_sequelize");
+require("./models/sync_models");
 
 const AuthRoute = require("./routes/auth.route");
 

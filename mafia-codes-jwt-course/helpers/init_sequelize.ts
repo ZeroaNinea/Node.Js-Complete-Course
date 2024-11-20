@@ -1,10 +1,11 @@
-const { Sequelize, DataTypes, Model } = require("sequelize");
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-require("dotenv").config();
+dotenv.config();
 
 const { DB_NAME, DB_USERNAME, DB_PASSWORD } = process.env;
 
-const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
+export const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
   host: "localhost",
   port: 3306,
   dialect: "mysql",
