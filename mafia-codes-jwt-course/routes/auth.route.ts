@@ -3,6 +3,7 @@ import express from "express";
 import createError from "http-errors";
 import User from "../models/user.model";
 import { authModel } from "../helpers/validation_model";
+import { signAccessToken } from "../helpers/jwt_helper";
 
 const router = express.Router();
 
@@ -10,8 +11,6 @@ router.post(
   "/register",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // const { email, password } = req.body;
-      // if (!email || !password) throw createError.BadRequest();
       const result = await authModel.validateAsync(req.body);
 
       const doesExist = await User.findOne({ where: { email: result.email } });
@@ -21,16 +20,11 @@ router.post(
           `${result.email} is already been registered.`
         );
       } else {
-        const user = User.build(
-          //   {
-          //   email: result.email,
-          //   password: result.password,
-          // }
-          result
-        );
+        const user = User.build(result);
         const savedUser = await user.save();
+        const accessToken = await signAccessToken(savedUser.id);
 
-        res.send(savedUser);
+        res.send({ accessToken });
       }
     } catch (error: any) {
       if (error.isJoi === true) error.status = 422;
