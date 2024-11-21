@@ -13,14 +13,21 @@ import "./models/sync_models";
 
 import AuthRoute from "./routes/auth.route";
 
+import { VerifyAccessToken } from "./helpers/jwt_helper";
+
 const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  res.send("Hello, World!");
-});
+app.get(
+  "/",
+  VerifyAccessToken,
+  async (req: Request, res: Response, next: NextFunction) => {
+    // console.log("This is your catgirl content: ", req.headers["authorization"]);
+    res.send("Hello, Catgirl!");
+  }
+);
 
 app.use("/auth", AuthRoute);
 

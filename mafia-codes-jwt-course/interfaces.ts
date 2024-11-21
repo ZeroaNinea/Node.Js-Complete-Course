@@ -1,5 +1,9 @@
 import { ValidationResult, ValidationError } from "@hapi/joi";
+import { Request } from "express";
 
+export interface MiddlewareAccessRequest extends Request {
+  payload?: string | object;
+}
 export interface CustomError extends Error {
   status?: number;
 }
