@@ -15,6 +15,8 @@ import AuthRoute from "./routes/auth.route";
 
 const app = express();
 app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req: Request, res: Response, next: NextFunction) => {
   res.send("Hello, World!");
