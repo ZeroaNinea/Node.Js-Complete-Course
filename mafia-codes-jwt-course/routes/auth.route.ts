@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import express from "express";
 import createError from "http-errors";
 import User from "../models/user.model";
+import { authModel } from "../helpers/validation_model";
 
 const router = express.Router();
 
@@ -9,20 +10,30 @@ router.post(
   "/register",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, password } = req.body;
-      if (!email || !password) throw createError.BadRequest();
+      // const { email, password } = req.body;
+      // if (!email || !password) throw createError.BadRequest();
+      const result = await authModel.validateAsync(req.body);
 
-      const doesExist = await User.findOne({ where: { email: email } });
+      const doesExist = await User.findOne({ where: { email: result.email } });
 
       if (doesExist) {
-        throw createError.Conflict(`${email} is already been registered.`);
+        throw createError.Conflict(
+          `${result.email} is already been registered.`
+        );
       } else {
-        const user = User.build({ email: email, password: password });
+        const user = User.build(
+          //   {
+          //   email: result.email,
+          //   password: result.password,
+          // }
+          result
+        );
         const savedUser = await user.save();
 
         res.send(savedUser);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.isJoi === true) error.status = 422;
       next(error);
     }
   }
