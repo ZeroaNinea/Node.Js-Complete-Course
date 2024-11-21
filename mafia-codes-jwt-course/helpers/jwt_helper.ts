@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { MiddlewareAccessRequest } from "../interfaces"; // Instead of the `Request` interface.
 
-import JWT from "jsonwebtoken";
+import JWT, { VerifyErrors, JwtPayload } from "jsonwebtoken";
 
 import createError from "http-errors";
 
@@ -43,7 +43,7 @@ export function VerifyAccessToken(
   req: MiddlewareAccessRequest,
   res: Response,
   next: NextFunction
-) {
+): void {
   if (!req.headers["authorization"]) return next(createError.Unauthorized());
   const authHeader = req.headers["authorization"];
   const bearerToken = authHeader.split(" ");
@@ -56,11 +56,20 @@ export function VerifyAccessToken(
     );
   }
 
-  JWT.verify(token, secret, (err, payload) => {
-    if (err) {
-      return next(createError.Unauthorized());
+  JWT.verify(
+    token,
+    secret,
+    (
+      err: VerifyErrors | null,
+      payload: string | JwtPayload | undefined
+    ): void => {
+      if (err) {
+        const message =
+          err?.name === "JsonWebTokenError" ? "Unauthorized" : err?.message;
+        return next(createError.Unauthorized(message));
+      }
+      req.payload = payload;
+      next();
     }
-    req.payload = payload;
-    next();
-  });
+  );
 }
