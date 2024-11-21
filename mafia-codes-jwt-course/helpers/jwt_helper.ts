@@ -73,3 +73,33 @@ export function VerifyAccessToken(
     }
   );
 }
+
+export function signRefreshToken(userId: number): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const payload = {};
+    const secret = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!secret) {
+      return reject(
+        new Error(
+          "REFRESH_TOKEN_SECRET is not defined in the environment variables."
+        )
+      );
+    }
+
+    const options = {
+      expiresIn: "1y",
+      issuer: "pickurpage.com",
+      audience: userId.toString(),
+    };
+
+    JWT.sign(payload, secret, options, (err, token) => {
+      if (err) {
+        console.log(err.message);
+        reject(createError.InternalServerError());
+      }
+
+      resolve(token);
+    });
+  });
+}

@@ -3,7 +3,7 @@ import express from "express";
 import createError from "http-errors";
 import User from "../models/user.model";
 import { authModel } from "../helpers/validation_model";
-import { signAccessToken } from "../helpers/jwt_helper";
+import { signAccessToken, signRefreshToken } from "../helpers/jwt_helper";
 import { AuthValidationResult, AuthValidationError } from "../interfaces";
 import { ValidationError } from "@hapi/joi";
 
@@ -25,8 +25,9 @@ router.post(
         const user = User.build(result);
         const savedUser = await user.save();
         const accessToken = await signAccessToken(savedUser.id);
+        const refreshToken = await signRefreshToken(savedUser.id);
 
-        res.send({ accessToken });
+        res.send({ accessToken, refreshToken });
       }
     } catch (error: unknown) {
       const extendedError = error as AuthValidationError;
@@ -53,8 +54,9 @@ router.post(
       if (!isMatch) throw createError.Unauthorized("Password is not valid.");
 
       const accessToken = await signAccessToken(user.id);
+      const refreshToken = await signRefreshToken(user.id);
 
-      res.send({ accessToken });
+      res.send({ accessToken, refreshToken });
     } catch (error: unknown) {
       if (error instanceof ValidationError && error.isJoi === true)
         return next(createError.BadRequest("Invalid username or password."));
