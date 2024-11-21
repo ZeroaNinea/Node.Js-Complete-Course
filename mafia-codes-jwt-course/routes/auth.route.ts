@@ -4,6 +4,8 @@ import createError from "http-errors";
 import User from "../models/user.model";
 import { authModel } from "../helpers/validation_model";
 import { signAccessToken } from "../helpers/jwt_helper";
+import { AuthValidationResult, AuthValidationError } from "../interfaces";
+import { ValidationError } from "@hapi/joi";
 
 const router = express.Router();
 
@@ -26,8 +28,11 @@ router.post(
 
         res.send({ accessToken });
       }
-    } catch (error: any) {
-      if (error.isJoi === true) error.status = 422;
+    } catch (error: unknown) {
+      const extendedError = error as AuthValidationError;
+
+      if (error instanceof ValidationError && error.isJoi === true)
+        extendedError.status = 422;
       next(error);
     }
   }
@@ -36,7 +41,25 @@ router.post(
 router.post(
   "/login",
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("Login route.");
+    try {
+      const result = (await authModel.validateAsync(
+        req.body
+      )) as AuthValidationResult;
+      const user = await User.findOne({ where: { email: result.email } });
+
+      if (!user) throw createError.NotFound("User not registered.");
+
+      const isMatch = await user.isValidPassword(result.password);
+      if (!isMatch) throw createError.Unauthorized("Password is not valid.");
+
+      const accessToken = await signAccessToken(user.id);
+
+      res.send({ accessToken });
+    } catch (error: unknown) {
+      if (error instanceof ValidationError && error.isJoi === true)
+        return next(createError.BadRequest("Invalid username or password."));
+      next(error);
+    }
   }
 );
 

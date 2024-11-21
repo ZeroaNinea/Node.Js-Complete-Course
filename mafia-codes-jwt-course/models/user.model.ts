@@ -6,6 +6,14 @@ class User extends Model {
   public id!: number;
   public email!: string;
   public password!: string;
+
+  public async isValidPassword(password: string): Promise<boolean> {
+    try {
+      return bcrypt.compare(password, this.password);
+    } catch (error: unknown) {
+      throw error;
+    }
+  }
 }
 
 User.init(
