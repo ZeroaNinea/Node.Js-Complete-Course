@@ -3,7 +3,11 @@ import express from "express";
 import createError from "http-errors";
 import User from "../models/user.model";
 import { authModel } from "../helpers/validation_model";
-import { signAccessToken, signRefreshToken } from "../helpers/jwt_helper";
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from "../helpers/jwt_helper";
 import { AuthValidationResult, AuthValidationError } from "../interfaces";
 import { ValidationError } from "@hapi/joi";
 
@@ -68,7 +72,18 @@ router.post(
 router.post(
   "/refresh-token",
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("Refresh token route.");
+    try {
+      const { refreshToken } = req.body;
+      if (!refreshToken) throw createError.BadRequest();
+      const userId = (await verifyRefreshToken(refreshToken)) as number;
+
+      const accessToken = await signAccessToken(userId);
+      const refToken = await signRefreshToken(userId);
+
+      res.send({ accessToken: accessToken, refreshToken: refToken });
+    } catch (error: unknown) {
+      next(error);
+    }
   }
 );
 

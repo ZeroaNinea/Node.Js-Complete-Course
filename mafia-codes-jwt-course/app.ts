@@ -24,7 +24,6 @@ app.get(
   "/",
   VerifyAccessToken,
   async (req: Request, res: Response, next: NextFunction) => {
-    // console.log("This is your catgirl content: ", req.headers["authorization"]);
     res.send("Hello, Catgirl!");
   }
 );

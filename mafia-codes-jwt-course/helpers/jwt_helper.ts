@@ -6,6 +6,7 @@ import JWT, { VerifyErrors, JwtPayload } from "jsonwebtoken";
 import createError from "http-errors";
 
 import dotenv from "dotenv";
+import { authModel } from "./validation_model";
 
 dotenv.config();
 
@@ -101,5 +102,30 @@ export function signRefreshToken(userId: number): Promise<unknown> {
 
       resolve(token);
     });
+  });
+}
+
+export function verifyRefreshToken(refreshToken: string): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const secret = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!secret) {
+      return reject(
+        new Error(
+          "REFRESH_TOKEN_SECRET is not defined in the environment variables."
+        )
+      );
+    }
+
+    JWT.verify(
+      refreshToken,
+      secret,
+      (err: VerifyErrors | null, payload: string | JwtPayload | undefined) => {
+        if (err) return reject(createError.Unauthorized());
+        const userId = (payload as JwtPayload)?.aud;
+
+        resolve(userId);
+      }
+    );
   });
 }
