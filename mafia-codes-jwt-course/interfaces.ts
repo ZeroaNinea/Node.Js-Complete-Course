@@ -1,6 +1,5 @@
 import { ValidationResult, ValidationError } from "@hapi/joi";
 import { Request } from "express";
-import { RedisClientOptions } from "redis";
 
 export interface MiddlewareAccessRequest extends Request {
   payload?: string | object;

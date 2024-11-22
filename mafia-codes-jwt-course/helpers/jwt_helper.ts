@@ -6,7 +6,12 @@ import JWT, { VerifyErrors, JwtPayload } from "jsonwebtoken";
 import createError from "http-errors";
 
 import dotenv from "dotenv";
-import { authModel } from "./validation_model";
+
+import {
+  redis_getValue,
+  redis_setValue,
+  redis_setValueWithExpiry,
+} from "./redis_service";
 
 dotenv.config();
 
@@ -24,7 +29,7 @@ export function signAccessToken(userId: number): Promise<unknown> {
     }
 
     const options = {
-      expiresIn: "1h",
+      expiresIn: "1y",
       issuer: "pickurpage.com",
       audience: userId.toString(),
     };
@@ -89,14 +94,28 @@ export function signRefreshToken(userId: number): Promise<unknown> {
     }
 
     const options = {
-      expiresIn: "1y",
+      expiresIn: "30s",
       issuer: "pickurpage.com",
       audience: userId.toString(),
     };
 
-    JWT.sign(payload, secret, options, (err, token) => {
+    JWT.sign(payload, secret, options, async (err, token) => {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
+        reject(createError.InternalServerError());
+      }
+
+      try {
+        await redis_setValueWithExpiry(
+          userId.toString(),
+          token as string,
+          // 60 * 60 * 24 * 7 // 1 hour.
+          // 10 // 10 seconds.
+          60 * 60 * 24 * 365 // One year.
+          // 30 // 30 seconds.
+        );
+      } catch (redisError: unknown) {
+        console.error("Error storing token in Redis:", redisError);
         reject(createError.InternalServerError());
       }
 
@@ -120,11 +139,25 @@ export function verifyRefreshToken(refreshToken: string): Promise<unknown> {
     JWT.verify(
       refreshToken,
       secret,
-      (err: VerifyErrors | null, payload: string | JwtPayload | undefined) => {
+      async (
+        err: VerifyErrors | null,
+        payload: string | JwtPayload | undefined
+      ) => {
         if (err) return reject(createError.Unauthorized());
-        const userId = (payload as JwtPayload)?.aud;
+        const userId = (payload as JwtPayload)?.aud as string;
 
-        resolve(userId);
+        try {
+          const result = await redis_getValue(userId.toString());
+
+          if (result === refreshToken) {
+            return resolve(userId);
+          } else {
+            reject(createError.Unauthorized());
+          }
+        } catch (redisError: unknown) {
+          console.error("Error getting token from Redis:", redisError);
+          reject(createError.InternalServerError());
+        }
       }
     );
   });

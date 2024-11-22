@@ -15,7 +15,6 @@ import AuthRoute from "./routes/auth.route";
 
 import { VerifyAccessToken } from "./helpers/jwt_helper";
 import client from "./helpers/init_redis";
-import { redis_setValue, redis_getValue } from "./helpers/redis_service";
 
 const app = express();
 app.use(morgan("dev"));
@@ -58,9 +57,9 @@ app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
     await client.connect();
     console.log("Redis client connected.");
 
-    redis_setValue("foo", "bar");
-    const value = redis_getValue("foo");
-    console.log(`The value from Redis: ${value}`);
+    // redis_setValue("foo", "bar");
+    // const value = redis_getValue("foo");
+    // console.log(`The value from Redis: ${value}`);
 
     const PORT = process.env.PORT || 3000;
 
