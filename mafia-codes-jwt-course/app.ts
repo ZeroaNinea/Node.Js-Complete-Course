@@ -14,6 +14,7 @@ import "./models/sync_models";
 import AuthRoute from "./routes/auth.route";
 
 import { VerifyAccessToken } from "./helpers/jwt_helper";
+import { client } from "./helpers/init_redis";
 
 const app = express();
 app.use(morgan("dev"));
