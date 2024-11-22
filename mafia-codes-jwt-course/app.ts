@@ -14,7 +14,8 @@ import "./models/sync_models";
 import AuthRoute from "./routes/auth.route";
 
 import { VerifyAccessToken } from "./helpers/jwt_helper";
-import { client } from "./helpers/init_redis";
+import client from "./helpers/init_redis";
+import { redis_setValue, redis_getValue } from "./helpers/redis_service";
 
 const app = express();
 app.use(morgan("dev"));
@@ -52,8 +53,22 @@ app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+(async () => {
+  try {
+    await client.connect();
+    console.log("Redis client connected.");
 
-app.listen(PORT, () => {
-  console.log(`The server is runnig on the port ${PORT}...`);
-});
+    redis_setValue("foo", "bar");
+    const value = redis_getValue("foo");
+    console.log(`The value from Redis: ${value}`);
+
+    const PORT = process.env.PORT || 3000;
+
+    app.listen(PORT, () => {
+      console.log(`The server is runnig on port ${PORT}...`);
+    });
+  } catch (err: unknown) {
+    console.error("Failed to initialize Redis or application server:", err);
+    process.exit(1);
+  }
+})();
