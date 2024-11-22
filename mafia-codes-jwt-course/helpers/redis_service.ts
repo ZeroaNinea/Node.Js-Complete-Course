@@ -1,10 +1,6 @@
 import client from "./init_redis";
 
 export async function redis_setValue(key: string, value: string) {
-  // if (!client.isOpen) {
-  //   await client.connect();
-  // }
-
   try {
     await client.set(key, value);
   } catch (err) {
@@ -27,14 +23,18 @@ export async function redis_setValueWithExpiry(
 }
 
 export async function redis_getValue(key: string): Promise<string | null> {
-  // if (!client.isOpen) {
-  //   await client.connect();
-  // }
-
   try {
     return await client.get(key);
   } catch (err) {
     console.error(`Error getting key "${key}" from Redis:`, err);
     return null;
+  }
+}
+
+export async function redis_deleteValue(key: string) {
+  try {
+    return await client.del(key);
+  } catch (err) {
+    console.error(`Error deleting key "${key}" from Redis:`, err);
   }
 }

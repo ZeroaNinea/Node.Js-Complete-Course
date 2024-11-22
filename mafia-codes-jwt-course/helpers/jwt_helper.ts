@@ -15,6 +15,10 @@ import {
 
 dotenv.config();
 
+const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY
+  ? parseInt(process.env.REFRESH_TOKEN_EXPIRY)
+  : 60 * 60 * 24 * 365;
+
 export function signAccessToken(userId: number): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const payload = {};
@@ -71,7 +75,9 @@ export function VerifyAccessToken(
     ): void => {
       if (err) {
         const message =
-          err?.name === "JsonWebTokenError" ? "Unauthorized" : err?.message;
+          err?.name === "JsonWebTokenError"
+            ? "Invalid token provided."
+            : err?.message || "Authorization failed.";
         return next(createError.Unauthorized(message));
       }
       req.payload = payload;
@@ -94,7 +100,7 @@ export function signRefreshToken(userId: number): Promise<unknown> {
     }
 
     const options = {
-      expiresIn: "30s",
+      expiresIn: "1y",
       issuer: "pickurpage.com",
       audience: userId.toString(),
     };
@@ -109,10 +115,7 @@ export function signRefreshToken(userId: number): Promise<unknown> {
         await redis_setValueWithExpiry(
           userId.toString(),
           token as string,
-          // 60 * 60 * 24 * 7 // 1 hour.
-          // 10 // 10 seconds.
-          60 * 60 * 24 * 365 // One year.
-          // 30 // 30 seconds.
+          REFRESH_TOKEN_EXPIRY
         );
       } catch (redisError: unknown) {
         console.error("Error storing token in Redis:", redisError);
