@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "test": "nodemon app.ts"
+    "start": "nodemon app.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "0a9a",
   "license": "ISC",
-  "description": "",
+  "description": "This is a complete course on user authentication.",
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.0",

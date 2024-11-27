@@ -1,1 +1,5 @@
-console.log("The `freecodecamp-jwt-complete-course` project has been created!");
+const express = require("express");
+
+const app = express();
+
+app.listen(3000);
