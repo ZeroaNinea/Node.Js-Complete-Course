@@ -14,6 +14,7 @@ dotenv.config();
 
 const app = express();
 
+const { SESSION_SECRET_KEY } = process.env;
 const PORT = parseInt(process.env.PORT!) || 3000;
 
 app.use(express.json());
@@ -33,7 +34,7 @@ const store = new SequelizeStore({
 app.use(
   // Session settings.
   session({
-    secret: "your_secret_key",
+    secret: SESSION_SECRET_KEY!,
     resave: false,
     saveUninitialized: true,
     store: store,

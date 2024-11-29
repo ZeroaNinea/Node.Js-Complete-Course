@@ -1,4 +1,9 @@
 import crypto from "crypto";
 
-export function validPassword(password: any, hash: any, salt: any) {}
-export function genPassword(password: any) {}
+export function validPassword(
+  password: string,
+  hash: string,
+  salt: string
+): any {}
+
+export function genPassword(password: string): any {}

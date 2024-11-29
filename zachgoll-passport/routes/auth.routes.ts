@@ -6,12 +6,36 @@ import passport from "passport";
 import { genPassword, validPassword } from "../lib/passwordUtils";
 import User from "../models/User";
 
-router.post("/login", (req: Request, res: Response, next: NextFunction) => {});
-
 router.post(
-  "/register",
+  "/login",
+  passport.authenticate("local"),
   (req: Request, res: Response, next: NextFunction) => {}
 );
+
+router.post("/register", (req: Request, res: Response, next: NextFunction) => {
+  const saltHash = genPassword(req.body.pw);
+
+  const salt = saltHash.salt;
+  const hash = saltHash.hash;
+
+  const newUser = User.build({
+    username: req.body.uname,
+    hash: hash,
+    salt: salt,
+    admin: true,
+  });
+
+  try {
+    newUser.save().then((user) => {
+      console.log(user);
+    });
+
+    res.redirect("/login");
+  } catch (err: unknown) {
+    console.error(err);
+    res.status(500).send("Error registering user.");
+  }
+});
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send(`

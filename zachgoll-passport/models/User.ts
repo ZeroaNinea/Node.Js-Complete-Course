@@ -1,4 +1,11 @@
-import { INTEGER, STRING, Model } from "sequelize";
+import {
+  INTEGER,
+  STRING,
+  Model,
+  BOOLEAN,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import sequelize from "../config/database";
 
 class User extends Model {
@@ -7,6 +14,7 @@ class User extends Model {
   public password!: string;
   public hash!: string;
   public salt!: string;
+  public admin!: boolean;
 }
 
 User.init(
@@ -20,6 +28,9 @@ User.init(
       type: STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        len: [3, 50], // Username must be between 3 and 50 characters
+      },
     },
     password: {
       type: STRING,
@@ -32,6 +43,11 @@ User.init(
     salt: {
       type: STRING,
       allowNull: false,
+    },
+    admin: {
+      type: BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   { sequelize, modelName: "User" }
