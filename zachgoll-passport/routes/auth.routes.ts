@@ -13,13 +13,13 @@ router.post(
 );
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) => {
-  const saltHash = genPassword(req.body.pw);
+  const saltHash = genPassword(req.body.password);
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
 
   const newUser = User.build({
-    username: req.body.uname,
+    username: req.body.username,
     hash: hash,
     salt: salt,
     admin: true,

@@ -11,7 +11,6 @@ import sequelize from "../config/database";
 class User extends Model {
   public id!: number;
   public username!: string;
-  public password!: string;
   public hash!: string;
   public salt!: string;
   public admin!: boolean;
@@ -32,10 +31,6 @@ User.init(
         len: [3, 50], // Username must be between 3 and 50 characters
       },
     },
-    password: {
-      type: STRING,
-      allowNull: false,
-    },
     hash: {
       type: STRING,
       allowNull: false,
@@ -52,5 +47,7 @@ User.init(
   },
   { sequelize, modelName: "User" }
 );
+
+sequelize.sync();
 
 export default User;

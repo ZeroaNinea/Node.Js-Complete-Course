@@ -20,9 +20,6 @@ const PORT = parseInt(process.env.PORT!) || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(router);
 
 const SequelizeStore = connectSessionSequelize(session.Store); // Allows session data to be stored in the database.
@@ -35,6 +32,7 @@ app.use(
   // Session settings.
   session({
     secret: SESSION_SECRET_KEY!,
+    // secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
     store: store,
@@ -46,6 +44,9 @@ app.use(
     },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}.`);
