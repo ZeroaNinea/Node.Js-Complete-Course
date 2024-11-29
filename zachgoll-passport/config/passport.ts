@@ -1,16 +1,19 @@
 import passport from "passport";
-import passportLocal from "passport-local";
-const LocalStrategy = passportLocal.Strategy;
+import { Strategy as LocalStrategy } from "passport-local";
 
 import User from "../models/User";
 import { validPassword } from "../lib/passwordUtils";
 
 const customFields = {
-  usernameField: "uname",
-  passwordField: "pw",
+  usernameField: "username",
+  passwordField: "password",
 };
 
-const verifyCallback = (username: string, password: string, done: any) => {
+const verifyCallback = async (
+  username: string,
+  password: string,
+  done: any
+) => {
   User.findOne({ where: { username: username } })
     .then((user) => {
       if (!user) {
@@ -39,7 +42,7 @@ passport.serializeUser((user, done) => {
   done(null, userId);
 });
 
-passport.deserializeUser((userId, done) => {
+passport.deserializeUser((userId: number, done) => {
   User.findOne({ where: { id: userId } })
     .then((user) => {
       done(null, user);

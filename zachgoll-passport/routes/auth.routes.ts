@@ -8,8 +8,10 @@ import User from "../models/User";
 
 router.post(
   "/login",
-  passport.authenticate("local"),
-  (req: Request, res: Response, next: NextFunction) => {}
+  passport.authenticate("local", {
+    failureRedirect: "/login-failure",
+    successRedirect: "/login-success",
+  })
 );
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) => {
@@ -84,7 +86,8 @@ router.get("/register", (req: Request, res: Response, next: NextFunction) => {
       <br />
       <br />
       <input type="submit" value="Submit" />
-    </form>`;
+    </form>
+  `;
 
   res.send(form);
 });
@@ -93,8 +96,9 @@ router.get(
   "/protected-route",
   (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
+      // Error: `isAuthenticated` is not a function. I don't know why, but that's how this is written in the original.
       res.send(
-        '<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>'
+        `<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>`
       );
     } else {
       res.send(
@@ -105,8 +109,12 @@ router.get(
 );
 
 router.get("/logout", (req: Request, res: Response, next: NextFunction) => {
-  req.logout();
-  res.redirect("/protected-route");
+  req.logout((err: Error) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/protected-route");
+  });
 });
 
 router.get(
