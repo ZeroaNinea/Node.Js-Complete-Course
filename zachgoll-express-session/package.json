@@ -1,5 +1,5 @@
 {
-  "name": "freecodecamp-jwt-complete-course",
+  "name": "zachgoll-express-session",
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
@@ -8,7 +8,7 @@
   "keywords": [],
   "author": "0a9a",
   "license": "ISC",
-  "description": "This is a complete course on user authentication.",
+  "description": "Express sessions with ZachGoll.",
   "devDependencies": {
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
