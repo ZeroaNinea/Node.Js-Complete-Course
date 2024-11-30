@@ -5,6 +5,7 @@ import passport from "passport";
 
 import { genPassword, validPassword } from "../lib/passwordUtils";
 import User from "../models/User";
+import { isAdmin, isAuth } from "./auth.middleware";
 
 router.post(
   "/login",
@@ -94,17 +95,26 @@ router.get("/register", (req: Request, res: Response, next: NextFunction) => {
 
 router.get(
   "/protected-route",
+  isAuth,
   (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-      // Error: `isAuthenticated` is not a function. I don't know why, but that's how this is written in the original.
-      res.send(
-        `<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>`
-      );
-    } else {
-      res.send(
-        '<h1>You are not authenticated</h1><p><a href="/login">Login</a></p>'
-      );
-    }
+    // if (req.isAuthenticated()) {
+    //   res.send(
+    //     `<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>`
+    //   );
+    // } else {
+    //   res.send(
+    //     '<h1>You are not authenticated</h1><p><a href="/login">Login</a></p>'
+    //   );
+    // }
+    res.send("You made it to the route.");
+  }
+);
+
+router.get(
+  "/admin-route",
+  isAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    res.send("You made it to the admin route.");
   }
 );
 

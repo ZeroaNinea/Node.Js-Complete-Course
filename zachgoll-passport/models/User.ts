@@ -3,13 +3,15 @@ import {
   STRING,
   Model,
   BOOLEAN,
+  UUID,
+  UUIDV4,
   InferAttributes,
   InferCreationAttributes,
 } from "sequelize";
 import sequelize from "../config/database";
 
 class User extends Model {
-  public id!: number;
+  public id!: string;
   public username!: string;
   public hash!: string;
   public salt!: string;
@@ -19,8 +21,8 @@ class User extends Model {
 User.init(
   {
     id: {
-      type: INTEGER,
-      autoIncrement: true,
+      type: UUID,
+      defaultValue: UUIDV4,
       primaryKey: true,
     },
     username: {
@@ -28,7 +30,7 @@ User.init(
       allowNull: false,
       unique: true,
       validate: {
-        len: [3, 50], // Username must be between 3 and 50 characters
+        len: [3, 50],
       },
     },
     hash: {

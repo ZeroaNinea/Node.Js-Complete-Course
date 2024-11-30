@@ -35,7 +35,7 @@ app.use(
     store: store,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // Cookie expires in 1 day.
-      httpOnly: false, // Allow access to cookies via JavaScript (debugging only).
+      httpOnly: true, // Allow access to cookies via JavaScript (debugging only).
       secure: false, // Send cookies over non-HTTPS connections.
       sameSite: "lax", // Mitigate CSRF while allowing cross-origin navigation.
     },
