@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "test": "mocha --require ts-node/register test/**.spec.ts"
+    "test": "c8 mocha"
   },
   "author": "0a9a",
   "license": "ISC",
@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/chai": "^5.0.1",
     "@types/mocha": "^10.0.10",
+    "c8": "^10.1.2",
     "chai": "^5.1.2",
     "mocha": "^11.0.1",
     "ts-node": "^10.9.2",
