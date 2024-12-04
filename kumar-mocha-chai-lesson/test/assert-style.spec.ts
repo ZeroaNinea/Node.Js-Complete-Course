@@ -27,7 +27,7 @@ describe("assert style", () => {
     expect(objData).to.not.have.property("catgirl").equal(true); // If don't have a property.
     expect(objData).to.be.a("object");
 
-    // array
+    // arrData
     expect(arrData).to.be.ok;
     expect(arrData).to.have.lengthOf(3);
     expect(arrData).to.have.lengthOf(3).that.include(2); // If has length `3` and has a value `2`.
