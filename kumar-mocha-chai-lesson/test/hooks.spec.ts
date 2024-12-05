@@ -2,10 +2,13 @@ import { expect } from "chai";
 import Calculator from "../src/calculator";
 
 describe.skip("hooks test", () => {
+  // `describe.skip` or `it.skip` — skip this suite of tests or test.
+  // `describe.only` or `it.only` — run only this suite of tests or test.
   let calc: Calculator;
   before(() => {
     // Runs before the first test.
     console.log("before");
+
     calc = new Calculator();
   });
 
