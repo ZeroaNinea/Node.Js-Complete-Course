@@ -1,9 +1,12 @@
 class Calculator {
   add(a: number, b: number): number {
-    return a + b;
+    this.logMessage("logging add function");
+    const c = this.getRandomValue();
+    return a + b + c;
   }
 
   subtract(a: number, b: number): number {
+    this.logMessage("logging subtract function");
     return a - b;
   }
 
@@ -17,6 +20,14 @@ class Calculator {
     }
 
     return a / b;
+  }
+
+  getRandomValue(): number {
+    return Math.floor(Math.random() * 10 + 1);
+  }
+
+  logMessage(msg: string) {
+    console.log(msg);
   }
 }
 
