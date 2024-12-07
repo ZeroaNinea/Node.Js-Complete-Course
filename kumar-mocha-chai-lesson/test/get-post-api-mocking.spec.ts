@@ -4,11 +4,14 @@ import nock from "nock";
 
 const baseUrl = "https://jsonplaceholder.typicode.com";
 
+// Nocks is needed to simulate fake requests and responses from the API.
 describe("API Testing", () => {
   it("should make a GET request from API", async () => {
     const calc = new Calculator();
     const mockedUserResponse = { id: 1, name: "kumar programming" };
-    nock(baseUrl).get("/users/1").reply(200, mockedUserResponse);
+    nock(baseUrl)
+      .get("/users/1") // Sends a request to the API.
+      .reply(200, mockedUserResponse); // Responds with a `200` status and the `mockedUserResponse` object.
 
     const res = await calc.getUser();
 
@@ -65,7 +68,9 @@ describe("API Testing", () => {
       id: 11,
     };
 
-    nock(baseUrl).post("/users", userPayload).reply(201, expectedUserResponse);
+    nock(baseUrl)
+      .post("/users", userPayload) // Intercepts a POST request to `https://jsonplaceholder.typicode.com/users` with the given payload (`userPayload`).
+      .reply(201, expectedUserResponse); // Responds with a `201` status and the `expectedUserResponse`.
 
     const res = await calc.saveUser(userPayload);
 
@@ -74,6 +79,6 @@ describe("API Testing", () => {
   });
 
   after(() => {
-    nock.cleanAll();
+    nock.cleanAll(); // Ensures that any mocked endpoints are removed after the test suite finishes. Prevents interference between tests.
   });
 });
