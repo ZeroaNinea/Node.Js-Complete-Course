@@ -108,7 +108,12 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*.ts", "test/**/*.spec.ts", "./types"],
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.spec.ts",
+    "./types",
+    "test/getting-started.spec.js"
+  ],
   "ts-node": {
     "files": true
   },
