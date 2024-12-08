@@ -1,5 +1,5 @@
-import request from "supertest"; // Import supertest
-import { expect } from "chai"; // Optionally use chai for assertions
+import request from "supertest";
+import { expect } from "chai";
 import app from "../app";
 import User from "../src/models/User";
 import sequelize from "../src/connection/database";
