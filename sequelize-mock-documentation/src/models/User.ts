@@ -48,13 +48,8 @@ User.init(
   }
 );
 
-sequelize
-  .sync()
-  .then((data) => {
-    console.log("Table synced successfully!", data);
-  })
-  .catch((err) => {
-    console.error("Error syncing the table: ", err);
-  });
+sequelize.sync({ force: true }).then(() => {
+  console.log("Database synced!");
+});
 
 export default User;

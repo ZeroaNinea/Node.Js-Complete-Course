@@ -1,0 +1,28 @@
+import request from "supertest"; // Import supertest
+import { expect } from "chai"; // Optionally use chai for assertions
+import app from "../app";
+import User from "../src/models/User";
+import sequelize from "../src/connection/database";
+
+describe("Express App", () => {
+  before(async () => {
+    try {
+      await sequelize.authenticate();
+      await sequelize.sync({ force: true });
+    } catch (err) {
+      console.error("Failed to initialize the database:", err);
+      throw err;
+    }
+  });
+
+  beforeEach(async () => {
+    await User.destroy({ where: {}, truncate: true });
+  });
+
+  it("should add Jane to the database and return her data", async () => {
+    const response = await request(app).get("/");
+
+    expect(response.status).to.equal(200);
+    expect(response.body).to.have.property("firstName", "Jane");
+  });
+});

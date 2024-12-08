@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "start": "nodemon app.ts",
-    "test": "c8 mocha"
+    "start": "nodemon",
+    "test": "nodemon --exec c8 mocha"
   },
   "author": "0a9a",
   "license": "ISC",
@@ -15,12 +15,14 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.1",
     "@types/sequelize": "^4.28.20",
+    "@types/supertest": "^6.0.2",
     "@types/typescript": "^2.0.0",
     "c8": "^10.1.2",
     "chai": "^5.1.2",
     "mocha": "^11.0.1",
     "nodemon": "^3.1.7",
     "sequelize-mock": "^0.10.2",
+    "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
