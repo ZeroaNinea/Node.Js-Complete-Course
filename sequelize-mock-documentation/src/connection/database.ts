@@ -13,16 +13,7 @@ const sequelize =
         `${DIALECT}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}:${DB_PORT}/${DB_NAME}`
       );
 
-if (process.env.NODE_ENV === "test") {
-  sequelize
-    .authenticate()
-    .then(() => {
-      console.log(`Connection to the testing database succussful!`);
-    })
-    .catch((err: Error) => {
-      console.log(`Error connecting to the testing database: ${err}`);
-    });
-} else {
+if (process.env.NODE_ENV !== "test") {
   sequelize
     .authenticate()
     .then(() => {
