@@ -15,10 +15,6 @@ describe("Express App", () => {
     }
   });
 
-  // beforeEach(async () => {
-  //   await User.destroy({ where: {}, truncate: true });
-  // });
-
   it("should add Jane to the database and return her data", async () => {
     await User.destroy({ where: {}, truncate: true });
 

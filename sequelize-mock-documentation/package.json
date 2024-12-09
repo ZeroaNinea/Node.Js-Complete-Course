@@ -4,7 +4,7 @@
   "main": "app.ts",
   "scripts": {
     "start": "nodemon",
-    "test": "nodemon --exec c8 mocha"
+    "test": "set NODE_ENV=test&& nodemon --exec c8 mocha"
   },
   "author": "0a9a",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.1",
     "@types/sequelize": "^4.28.20",
+    "@types/sqlite3": "^3.1.11",
     "@types/supertest": "^6.0.2",
     "@types/typescript": "^2.0.0",
     "c8": "^10.1.2",
@@ -31,6 +32,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mysql2": "^3.11.5",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
   }
 }
