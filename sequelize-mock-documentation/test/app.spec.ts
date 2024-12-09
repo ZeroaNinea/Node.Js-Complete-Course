@@ -15,14 +15,24 @@ describe("Express App", () => {
     }
   });
 
-  beforeEach(async () => {
-    await User.destroy({ where: {}, truncate: true });
-  });
+  // beforeEach(async () => {
+  //   await User.destroy({ where: {}, truncate: true });
+  // });
 
   it("should add Jane to the database and return her data", async () => {
+    await User.destroy({ where: {}, truncate: true });
+
     const response = await request(app).get("/");
 
     expect(response.status).to.equal(200);
     expect(response.body).to.have.property("firstName", "Jane");
+  });
+
+  it("should return Jane's full name", async () => {
+    const response = await request(app).get("/get-full-name");
+    console.log(response.body);
+
+    expect(response.status).to.equal(200);
+    expect(response.body).to.have.property("fullName", "Jane Doe");
   });
 });
