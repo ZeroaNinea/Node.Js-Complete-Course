@@ -9,7 +9,7 @@ const DB_PORT = parseInt(process.env.DB_PORT!) || 3306;
 
 const sequelize =
   process.env.NODE_ENV === "test"
-    ? new Sequelize("sqlite::memory")
+    ? new Sequelize("sqlite::memory", { logging: false })
     : new Sequelize(
         `${DIALECT}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}:${DB_PORT}/${DB_NAME}`
       );
@@ -28,5 +28,3 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 export default sequelize;
-
-// loggin false added.
