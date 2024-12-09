@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const { DB_NAME, DB_USERNAME, DB_PASSWORD, DIALECT, HOST } = process.env;
+const { DB_NAME, DB_USERNAME, DB_PASSWORD, DIALECT, TEST_DIALECT, HOST } =
+  process.env;
 const DB_PORT = parseInt(process.env.DB_PORT!) || 3306;
 
 const sequelize =
   process.env.NODE_ENV === "test"
-    ? new Sequelize("sqlite::memory")
+    ? new Sequelize(`${TEST_DIALECT}::memory`)
     : new Sequelize(
         `${DIALECT}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}:${DB_PORT}/${DB_NAME}`
       );
