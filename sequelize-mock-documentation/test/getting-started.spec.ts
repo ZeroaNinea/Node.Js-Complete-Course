@@ -1,23 +1,12 @@
 import { expect } from "chai";
 import SequelizeMock from "sequelize-mock";
+import UserMock from "./mocks/UserMock";
 
-const dbMock = new SequelizeMock(); // Initialize mock database.
+// Initialize mock Sequelize instance.
+const dbMock = new SequelizeMock();
 
-const UserMock = dbMock.define(
-  "user",
-  {
-    firstName: "Jane",
-    lastName: "Doe",
-    email: "test@example.com",
-  },
-  {
-    instanceMethods: {
-      getFullName: function () {
-        return this.get("firstName") + " " + this.get("lastName");
-      },
-    },
-  }
-);
+// Override real model with mock model.
+dbMock.$overrideImport("./src/models/User", "./test/mocks/UserMock");
 
 describe("Sequelize Mock - User Model", () => {
   it("should return full name using getFullName", async () => {
