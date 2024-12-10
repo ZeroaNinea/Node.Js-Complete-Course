@@ -5,7 +5,6 @@ const app = express();
 import User from "./src/models/User";
 
 import "./src/connection/database";
-import "./src/models/User";
 
 import dotenv from "dotenv";
 dotenv.config();

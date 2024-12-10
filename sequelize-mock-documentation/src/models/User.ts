@@ -48,7 +48,7 @@ User.init(
   }
 );
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync().then(() => {
   console.log("Database synced!");
 });
 
