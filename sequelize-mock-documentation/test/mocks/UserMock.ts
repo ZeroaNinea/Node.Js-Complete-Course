@@ -5,6 +5,7 @@ const dbMock = new SequelizeMock(); // Initialize mock database.
 const UserMock = dbMock.define(
   "user",
   {
+    id: 1,
     firstName: "Jane",
     lastName: "Doe",
     email: "test@example.com",
