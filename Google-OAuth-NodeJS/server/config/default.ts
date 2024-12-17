@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default {
+  authRequired: false,
+  auth0Logout: true,
   port: 1337,
   origin: "http://localhost:3000",
   dbUri: "mongodb://localhost:27017/rest-api-tutorial",
@@ -19,9 +21,9 @@ export default {
     "utf8"
   ),
 
-  googleClientId: process.env.GOOGLE_CLIENT_ID || "",
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-  googleOauthRedirectUrl:
-    process.env.GOOGLE_OAUTH_REDIRECT_URL ||
-    "http://localhost:1337/api/sessions/oauth/google",
+  auth0ClientId: process.env.AUTH0_CLIENT_ID || "",
+  auth0ClientSecret: process.env.AUTH0_CLIENT_SECRET || "",
+  auth0Domain:
+    process.env.AUTH0_OAUTH_REDIRECT_URL ||
+    "https://dev-8fltw5leydf6r72y.us.auth0.com",
 };
