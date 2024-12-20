@@ -1,7 +1,8 @@
 const express = require("express");
 const qs = require("querystring");
 const passport = require("passport");
-const OpenIDConnectStrategy = require("passport-openidconnect");
+// const OpenIDConnectStrategy = require("passport-openidconnect");
+const OAuth2Strategy = require("passport-oauth2");
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ require("dotenv").config();
 
 const { AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = process.env;
 
+/*
 // Configure the strategy to work with Auth0.
 passport.use(
   new OpenIDConnectStrategy(
@@ -24,6 +26,24 @@ passport.use(
     },
     function verify(issuer, profile, cb) {
       return cb(null, profile);
+    }
+  )
+);
+*/
+
+// Configure strategy to work with Auth0 in the `auth0-tutorial_passport-oauth2` branch.
+passport.use(
+  new OAuth2Strategy(
+    {
+      authorizationURL: "https://" + AUTH0_DOMAIN + "/authorize",
+      tokenURL: "https://" + AUTH0_DOMAIN + "/oauth/token",
+      clientID: AUTH0_CLIENT_ID,
+      clientSecret: AUTH0_CLIENT_SECRET,
+      callbackURL: "/oauth2/redirect",
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      // Use the accessToken to fetch user profile from your resource server.
+      cb(null, profile);
     }
   )
 );
