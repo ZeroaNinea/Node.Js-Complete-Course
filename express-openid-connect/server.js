@@ -3,8 +3,9 @@ const express = require("express");
 const http = require("http");
 const logger = require("morgan");
 const path = require("path");
-const router = require("./routes/index");
 const { auth } = require("express-openid-connect");
+
+const router = require("./routes/index");
 
 dotenv.load();
 
@@ -19,11 +20,30 @@ app.use(express.json());
 
 const config = {
   authRequired: false,
+  idpLogout: true,
   auth0Logout: true,
   baseURL: process.env.BASE_URL,
   clientID: process.env.CLIENT_ID,
   issuerBaseURL: process.env.ISSUER_BASE_URL,
-  secret: process.env.SECRET,
+  // secret: process.env.SECRET,
+  clientSecret: process.env.SECRET,
+  /*
+  // Custom routes.
+  routes: {
+    // Pass custom options to the login method by overriding the default login route.
+    login: false,
+    // Pass a custom path to the postLogoutRedirect to redirect users to a different.
+    // Path after login, this should be registered on your authorization server.
+    postLogoutRedirect: '/custom-logout',
+    callback: false,
+  },
+  */
+  authorizationParams: {
+    response_type: "code",
+    audience: "https://fakestoreapi.com/products",
+    scope: "openid profile email read:products",
+    prompt: "consent",
+  },
 };
 
 const port = process.env.PORT || 3000;
@@ -38,7 +58,7 @@ if (
 
 app.use(auth(config));
 
-// Middleware to make the `user` object available for all views
+// Middleware to make the `user` object available for all views.
 app.use(function (req, res, next) {
   res.locals.user = req.oidc.user;
   next();
@@ -46,14 +66,14 @@ app.use(function (req, res, next) {
 
 app.use("/", router);
 
-// Catch 404 and forward to error handler
+// Catch 404 and forward to error handler.
 app.use(function (req, res, next) {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
 
-// Error handlers
+// Error handlers.
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error", {
