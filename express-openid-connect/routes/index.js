@@ -32,10 +32,15 @@ router.get("/profile", requiresAuth(), async (req, res) => {
       json: true,
     });
 
+    const userInfo = await req.oidc.fetchUserInfo();
+
+    console.log(userInfo);
+
     // Pass data to the template.
     res.render("profile", {
       user: req.oidc.user,
       userProfile: JSON.stringify(req.oidc.user, null, 2),
+      userInfo: JSON.stringify(userInfo, null, 2),
       products, // Include the fetched products.
     });
   } catch (error) {
