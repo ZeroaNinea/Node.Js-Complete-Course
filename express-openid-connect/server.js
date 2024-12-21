@@ -20,8 +20,8 @@ app.use(express.json());
 
 const config = {
   authRequired: false,
-  idpLogout: true,
-  auth0Logout: true,
+  idpLogout: true, // The user additionally logs out of the IDP session when clicks on the "logout."
+  auth0Logout: true, // If using custom domain with Auth0 (logout).
   baseURL: process.env.BASE_URL,
   clientID: process.env.CLIENT_ID,
   issuerBaseURL: process.env.ISSUER_BASE_URL,
@@ -38,11 +38,14 @@ const config = {
     callback: false,
   },
   */
+  routes: {
+    callback: "/callback", // Enable the callback route.
+  },
   authorizationParams: {
     response_type: "code",
     audience: "https://fakestoreapi.com/products",
     scope: "openid profile email read:products",
-    prompt: "consent",
+    prompt: "consent", // Requires consent of the user.
   },
 };
 
