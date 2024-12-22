@@ -5,12 +5,19 @@ const logger = require("morgan");
 const path = require("path");
 const { auth } = require("express-openid-connect");
 const base64Url = require("base64url");
+// const MemoryStore = require('memorystore')(auth); // Hey girl, you need to install the `memorystore` module if you want to run it.
+const { createClient } = require("redis");
+const { RedisStore } = require("connect-redis");
 
 const router = require("./routes/index");
 
 dotenv.load();
 
 const app = express();
+
+// Set up Redis client.
+let redisClient = createClient();
+redisClient.connect().catch(console.error);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -61,6 +68,17 @@ const config = {
     }
 
     return session;
+  },
+  // With `memorystore`.
+  // session: {
+  //   store: new MemoryStore({
+  //     checkPeriod: 24 * 60 * 1000,
+  //   }),
+  // },
+  // With Redis.
+  session: {
+    // Store user session data in Redis instead of cookies.
+    store: new RedisStore({ client: redisClient }),
   },
 };
 
