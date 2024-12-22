@@ -4,6 +4,7 @@ const http = require("http");
 const logger = require("morgan");
 const path = require("path");
 const { auth } = require("express-openid-connect");
+const base64Url = require("base64url");
 
 const router = require("./routes/index");
 
@@ -46,6 +47,20 @@ const config = {
     audience: "https://fakestoreapi.com/products",
     scope: "openid profile email read:products",
     prompt: "consent", // Requires consent of the user.
+  },
+  afterCallback: (req, res, session) => {
+    // The `afterCallback` hook validates specific claims in the user's ID token after the authentication process.
+    const token = session.id_token;
+
+    // Decode the token payload.
+    const payload = JSON.parse(base64Url.decode(token.split(".")[1]));
+
+    // Check user's email.
+    if (payload.email !== "zeroaninea@gmail.com") {
+      throw new Error("Unauthorized email");
+    }
+
+    return session;
   },
 };
 
