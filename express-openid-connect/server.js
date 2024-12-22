@@ -80,6 +80,10 @@ const config = {
     // Store user session data in Redis instead of cookies.
     store: new RedisStore({ client: redisClient }),
   },
+  // backchannelLogout: {
+  //   store: new RedisStore({ client: redisClient }), // Provide saving of sessions for the user from different devices.
+  // },
+  backchannelLogout: true, // Repeat saving session data as in the `session` hook.
 };
 
 const port = process.env.PORT || 3000;
