@@ -10,10 +10,11 @@ const { createClient } = require("redis");
 const { RedisStore } = require("connect-redis");
 
 const router = require("./routes/index");
+const pool = require("./config/db");
+const { encrypt, decrypt } = require("./cryptography/encrypt-decrypt");
+const { addUserToDatabase } = require("./modules/add-user");
 
-require("./config/db");
-
-dotenv.load();
+dotenv.config();
 
 const app = express();
 
@@ -27,6 +28,25 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+
+// Middleware to check token expiration.
+// const checkTokenExpiration = async (req, res, next) => {
+//   const query = "SELECT token_expiration FROM users WHERE email = ?";
+//   const encryptedEmail = encrypt(req.oidc.user.email);
+
+//   try {
+//     const [rows] = await pool.query(query, [encryptedEmail]);
+//     if (rows.length && Date.now() > rows[0].token_expiration) {
+//       return res.status(401).send("Token expired. Please log in again.");
+//     }
+//   } catch (err) {
+//     console.error("Error checking token expiration:", err);
+//     return res.status(500).send("Internal server error.");
+//   }
+//   next();
+// };
+
+// app.use(checkTokenExpiration);
 
 const config = {
   authRequired: false,
@@ -55,14 +75,20 @@ const config = {
     response_type: "code",
     audience: "https://fakestoreapi.com/products",
     scope: "openid profile email read:products",
-    prompt: "consent", // Requires consent of the user.
+    // prompt: "consent", // Requires consent of the user.
   },
-  afterCallback: (req, res, session) => {
+  afterCallback: async (req, res, session) => {
     // The `afterCallback` hook validates specific claims in the user's ID token after the authentication process.
     const token = session.id_token;
 
     // Decode the token payload.
     const payload = JSON.parse(base64Url.decode(token.split(".")[1]));
+
+    // Get user's exparation token.
+    // const tokenExpiration = Date.now() + session.expires_at * 1000;
+
+    // Add user to the database
+    await addUserToDatabase(payload);
 
     // Check user's email.
     if (payload.email !== "zeroaninea@gmail.com") {
