@@ -11,6 +11,8 @@ const { RedisStore } = require("connect-redis");
 
 const router = require("./routes/index");
 
+require("./config/db");
+
 dotenv.load();
 
 const app = express();
