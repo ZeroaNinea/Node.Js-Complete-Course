@@ -12,7 +12,7 @@ const { RedisStore } = require("connect-redis");
 const router = require("./routes/index");
 const pool = require("./config/db");
 const { encrypt, decrypt } = require("./cryptography/encrypt-decrypt");
-const { addUserToDatabase } = require("./modules/add-user");
+const { addUserToDatabase } = require("./helpers/add-user");
 
 dotenv.config();
 
@@ -28,25 +28,6 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
-
-// Middleware to check token expiration.
-// const checkTokenExpiration = async (req, res, next) => {
-//   const query = "SELECT token_expiration FROM users WHERE email = ?";
-//   const encryptedEmail = encrypt(req.oidc.user.email);
-
-//   try {
-//     const [rows] = await pool.query(query, [encryptedEmail]);
-//     if (rows.length && Date.now() > rows[0].token_expiration) {
-//       return res.status(401).send("Token expired. Please log in again.");
-//     }
-//   } catch (err) {
-//     console.error("Error checking token expiration:", err);
-//     return res.status(500).send("Internal server error.");
-//   }
-//   next();
-// };
-
-// app.use(checkTokenExpiration);
 
 const config = {
   authRequired: false,

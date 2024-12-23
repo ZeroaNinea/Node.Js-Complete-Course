@@ -10,16 +10,10 @@ const {
 
 require("dotenv").config();
 
-const requireClaim = (claim, value) => {
-  return (req, res, next) => {
-    // Check if user is authenticated and has the required claim.
-    if (req.oidc && req.oidc.user && req.oidc.user[claim] === value) {
-      next();
-    } else {
-      res.redirect("/access-denied"); // Redirect to a safe page.
-    }
-  };
-};
+const { checkSessionExpiration } = require("../helpers/expiration-logic");
+const { requireClaim } = require("../helpers/require-claim");
+const pool = require("../config/db");
+const { encrypt, decrypt } = require("../cryptography/encrypt-decrypt");
 
 router.use((req, res, next) => {
   if (req.path === "/access-denied") {
@@ -47,6 +41,7 @@ router.get(
   //     return false;
   //   }
   // }), // This is another useless function with infinite redirect.
+  checkSessionExpiration,
   async (req, res) => {
     try {
       // Fetch products using the access token.
@@ -66,7 +61,31 @@ router.get(
         json: true,
       });
 
+      // Get user info.
       const userInfo = await req.oidc.fetchUserInfo();
+
+      // Decript data.
+      const encriptedEmail = encrypt(req.oidc.user.email);
+      const [users] = await pool.query("SELECT * FROM users WHERE email = ?", [
+        encriptedEmail,
+      ]);
+
+      const decryptProps = [
+        "email",
+        "name",
+        "nickname",
+        "given_name",
+        "sub",
+        "sid",
+        "nonce",
+      ];
+
+      // Loop the array and decrypt it.
+      for (let user of users) {
+        for (const decryptProp of decryptProps) {
+          user[decryptProp] = decrypt(user[decryptProp]);
+        }
+      }
 
       // Pass data to the template.
       res.render("profile", {
@@ -74,6 +93,7 @@ router.get(
         userProfile: JSON.stringify(req.oidc.user, null, 2),
         userInfo: JSON.stringify(userInfo, null, 2),
         products, // Include the fetched products.
+        users: JSON.stringify(users, null, 2),
       });
     } catch (error) {
       console.error("Error fetching products:", error.message);

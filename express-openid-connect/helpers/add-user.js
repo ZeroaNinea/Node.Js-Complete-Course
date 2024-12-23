@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { encrypt, decrypt } = require("../cryptography/encrypt-decrypt");
 
 const formatDateForMySQL = (isoString) => {
   // Converts the ISO 8601 string into MySQL DATETIME format by stripping milliseconds and replacing the `T` with a space.
@@ -27,8 +28,6 @@ const addUserToDatabase = async (payload) => {
 
   const formattedUpdatedAt = formatDateForMySQL(updated_at);
 
-  // const tokenExpiration = Date.now() + exp * 1000;
-
   const addUserQuery = `
     INSERT INTO users (
       sub, email, email_verified, name, nickname, given_name, picture, updated_at, sid, nonce, iss, aud, iat, exp
@@ -50,17 +49,25 @@ const addUserToDatabase = async (payload) => {
   `;
 
   try {
+    const encryptedEmail = encrypt(email);
+    const encryptedName = encrypt(name);
+    const encryptedNickname = encrypt(nickname);
+    const encryptedGiven_name = encrypt(given_name);
+    const encryptedSub = encrypt(sub);
+    const encryptedSid = encrypt(sid);
+    const encryptedNonce = encrypt(nonce);
+
     await pool.query(addUserQuery, [
-      sub,
-      email,
+      encryptedSub,
+      encryptedEmail,
       email_verified,
-      name,
-      nickname,
-      given_name,
+      encryptedName,
+      encryptedNickname,
+      encryptedGiven_name,
       picture,
       formattedUpdatedAt,
-      sid,
-      nonce,
+      encryptedSid,
+      encryptedNonce,
       iss,
       aud,
       iat,

@@ -1,3 +1,6 @@
+const pool = require("../config/db");
+const { encrypt } = require("../cryptography/encrypt-decrypt");
+
 const isSessionExpired = (exp) => {
   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds.
   return currentTime > exp;
@@ -6,7 +9,7 @@ const isSessionExpired = (exp) => {
 // Example middleware to check session expiration.
 const checkSessionExpiration = async (req, res, next) => {
   try {
-    const email = req.user.email; // Assume `req.user` contains the user info.
+    const email = encrypt(req.oidc.user.email);
     const [result] = await pool.query("SELECT exp FROM users WHERE email = ?", [
       email,
     ]);
@@ -22,9 +25,9 @@ const checkSessionExpiration = async (req, res, next) => {
         .json({ error: "Session expired, please log in again" });
     }
 
-    next(); // Proceed if the session is valid.
-  } catch (error) {
-    console.error("Error checking session expiration:", error);
+    next();
+  } catch (err) {
+    console.error("Error checking session expiration:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
