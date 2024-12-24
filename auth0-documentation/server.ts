@@ -8,12 +8,21 @@ dotenv.config();
 
 const app = express();
 
-const { BASE_URL, CLIENT_ID, CLIENT_SECRET, HOST, FAKESTORE_API } = process.env;
+const {
+  ISSUER_BASE_URL,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  HOST,
+  FAKESTORE_API,
+  GIRLIEST_API,
+  GIRLIEST_API_ACCESS_TOKEN,
+} = process.env;
 const PORT = parseInt(process.env.PORT!) || 5000;
 
 const checkJwt = auth({
-  audience: FAKESTORE_API,
-  issuerBaseURL: BASE_URL,
+  audience: GIRLIEST_API,
+  issuerBaseURL: ISSUER_BASE_URL,
+  tokenSigningAlg: "RS256",
 });
 
 // This route doesn't need authentication.
