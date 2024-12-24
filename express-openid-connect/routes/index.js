@@ -10,7 +10,10 @@ const {
 
 require("dotenv").config();
 
-const { checkSessionExpiration } = require("../helpers/expiration-logic");
+const {
+  checkSessionExpiration,
+  // refreshExpiration,
+} = require("../helpers/expiration-logic");
 const { requireClaim } = require("../helpers/require-claim");
 const pool = require("../config/db");
 const { encrypt, decrypt } = require("../cryptography/encrypt-decrypt");
@@ -50,9 +53,13 @@ router.get(
 
       if (isExpired()) {
         ({ access_token } = await refresh()); // Update access token with refresh token.
+
+        const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60;
+        await refreshExpiration(encrypt(req.oidc.user.email), expirationTime); // Update expiration data in the database.
       }
 
       const apiUrl = "https://fakestoreapi.com/products";
+      // const apiUrl = "https://api.escuelajs.co/api/v1/products";
 
       const products = await request.get(apiUrl, {
         headers: {

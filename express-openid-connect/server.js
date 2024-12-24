@@ -55,6 +55,7 @@ const config = {
   authorizationParams: {
     response_type: "code",
     audience: "https://fakestoreapi.com/products",
+    // audience: "https://api.escuelajs.co/api/v1/products",
     scope: "openid profile email read:products",
     // prompt: "consent", // Requires consent of the user.
   },

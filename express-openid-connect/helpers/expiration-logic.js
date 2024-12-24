@@ -35,14 +35,19 @@ const checkSessionExpiration = async (req, res, next) => {
 // Refresh expired token.
 const refreshExpiration = async (email, newExp) => {
   try {
-    await pool.query(
+    const result = await pool.query(
       "UPDATE users SET exp = FROM_UNIXTIME(?) WHERE email = ?",
       [newExp, email]
     );
-    console.log("Session expiration refreshed.");
+
+    if (result.affectedRows === 0) {
+      console.warn(`No rows updated. Email not found: ${email}`);
+    } else {
+      console.log("Session expiration refreshed successfully.");
+    }
   } catch (error) {
-    console.error("Error refreshing expiration:", error);
-    throw new Error("Database error");
+    console.error("Error refreshing expiration:", error.message);
+    throw new Error("Failed to refresh session expiration");
   }
 };
 
