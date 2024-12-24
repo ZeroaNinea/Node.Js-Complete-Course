@@ -66,8 +66,7 @@ const config = {
     // Decode the token payload.
     const payload = JSON.parse(base64Url.decode(token.split(".")[1]));
 
-    // Get user's exparation token.
-    // const tokenExpiration = Date.now() + session.expires_at * 1000;
+    console.log(payload);
 
     // Add user to the database
     await addUserToDatabase(payload);
