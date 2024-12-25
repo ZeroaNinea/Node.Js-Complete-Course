@@ -19,6 +19,24 @@ const {
 } = process.env;
 const PORT = parseInt(process.env.PORT!) || 5000;
 
+// Test request to my own API.
+const options = {
+  method: "GET",
+  url: `http://${HOST}:${PORT}/api/private`,
+  headers: {
+    authorization: `Bearer ${GIRLIEST_API_ACCESS_TOKEN}`,
+  },
+};
+
+axios
+  .request(options)
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
+
 const checkJwt = auth({
   audience: GIRLIEST_API,
   issuerBaseURL: ISSUER_BASE_URL,
