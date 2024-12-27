@@ -1,4 +1,4 @@
-export interface Options {
+export default interface Options {
   method: string;
   url: string;
   headers: {

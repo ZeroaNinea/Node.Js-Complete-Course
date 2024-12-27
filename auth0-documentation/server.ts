@@ -5,7 +5,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
-import { Options } from "./types/Options.interface";
+import Options from "./types/Options.interface";
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ const {
 const PORT = parseInt(process.env.PORT!) || 5000;
 
 // Request an access token, and request to the custom API.
-async function getToken() {
+async function getTokenSendRequests() {
   const response = await axios.post(`${ISSUER_BASE_URL}/oauth/token`, {
     client_id: GIRLIEST_API_CLIENT_ID,
     client_secret: GIRLIEST_API_CLIENT_SECRET,
@@ -38,7 +38,7 @@ async function getToken() {
   return response.data.access_token;
 }
 
-getToken().then((token) => {
+getTokenSendRequests().then((token) => {
   const decoded = jwt.decode(token);
   console.log("New Token:", token);
   // console.log("Decoded Token:", decoded);
