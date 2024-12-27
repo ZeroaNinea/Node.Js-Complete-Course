@@ -5,6 +5,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
+import { Options } from "./types/Options.interface";
+
 dotenv.config();
 
 const app = express();
@@ -41,56 +43,40 @@ getToken().then((token) => {
   console.log("New Token:", token);
   // console.log("Decoded Token:", decoded);
 
-  let options = {
-    method: "GET",
-    url: `http://${HOST}:${PORT}/api/private`,
-    headers: {
-      authorization: `Bearer ${token}`,
+  const optionsArray: Options[] = [
+    {
+      method: "GET",
+      url: `http://${HOST}:${PORT}/api/public`,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     },
-  };
-
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-
-  options = {
-    method: "GET",
-    url: `http://${HOST}:${PORT}/api/public`,
-    headers: {
-      authorization: `Bearer ${token}`,
+    {
+      method: "GET",
+      url: `http://${HOST}:${PORT}/api/private`,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     },
-  };
-
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-
-  options = {
-    method: "GET",
-    url: `http://${HOST}:${PORT}/api/private-scoped`,
-    headers: {
-      authorization: `Bearer ${token}`,
+    {
+      method: "GET",
+      url: `http://${HOST}:${PORT}/api/private-scoped`,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     },
-  };
+  ];
 
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  optionsArray.forEach((options: Options) => {
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  });
 });
 
 const checkJwt = auth({
