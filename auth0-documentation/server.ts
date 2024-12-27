@@ -1,5 +1,11 @@
 import express, { Request, Response } from "express";
-import { auth, requiredScopes } from "express-oauth2-jwt-bearer";
+import {
+  auth,
+  requiredScopes,
+  claimEquals, // Same as in the `express-openid-connect`. Checks if the response has a specific value.
+  claimIncludes, // Same as in the `express-openid-connect`. Checks if the response contains a specific value.
+  claimCheck, // Same as `claimEquals`, only in reverse. If the user has specific properties, they can't access the path.
+} from "express-oauth2-jwt-bearer";
 import axios from "axios";
 
 import dotenv from "dotenv";
