@@ -3,6 +3,7 @@ import { auth, requiredScopes } from "express-oauth2-jwt-bearer";
 import axios from "axios";
 
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -16,26 +17,81 @@ const {
   FAKESTORE_API,
   GIRLIEST_API,
   GIRLIEST_API_ACCESS_TOKEN,
+  GIRLIEST_API_CLIENT_ID,
+  GIRLIEST_API_CLIENT_SECRET,
+  GIRLIEST_API_USER_EMAIL,
+  GIRLIEST_API_USER_PASSWORD,
 } = process.env;
 const PORT = parseInt(process.env.PORT!) || 5000;
 
-// Test request to my own API.
-const options = {
-  method: "GET",
-  url: `http://${HOST}:${PORT}/api/private`,
-  headers: {
-    authorization: `Bearer ${GIRLIEST_API_ACCESS_TOKEN}`,
-  },
-};
-
-axios
-  .request(options)
-  .then(function (response) {
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    console.error(error);
+// Request an access token, and request to the custom API.
+async function getToken() {
+  const response = await axios.post(`${ISSUER_BASE_URL}/oauth/token`, {
+    client_id: GIRLIEST_API_CLIENT_ID,
+    client_secret: GIRLIEST_API_CLIENT_SECRET,
+    audience: GIRLIEST_API,
+    grant_type: "client_credentials",
   });
+
+  return response.data.access_token;
+}
+
+getToken().then((token) => {
+  const decoded = jwt.decode(token);
+  console.log("New Token:", token);
+  // console.log("Decoded Token:", decoded);
+
+  let options = {
+    method: "GET",
+    url: `http://${HOST}:${PORT}/api/private`,
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+
+  options = {
+    method: "GET",
+    url: `http://${HOST}:${PORT}/api/public`,
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+
+  options = {
+    method: "GET",
+    url: `http://${HOST}:${PORT}/api/private-scoped`,
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+});
 
 const checkJwt = auth({
   audience: GIRLIEST_API,
@@ -59,12 +115,10 @@ app.get("/api/private", checkJwt, function (req: Request, res: Response) {
   });
 });
 
-const checkScopes = requiredScopes("read:messages");
-
 app.get(
   "/api/private-scoped",
   checkJwt,
-  checkScopes,
+  requiredScopes("read:messages"),
   function (req: Request, res: Response) {
     res.json({
       message:
