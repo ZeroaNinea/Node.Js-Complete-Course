@@ -61,8 +61,6 @@ const config = {
     // prompt: "consent", // Requires consent of the user.
   },
   afterCallback: async (req, res, session) => {
-    const namespace = "https://express-openid-connect.com/";
-
     // The `afterCallback` hook validates specific claims in the user's ID token after the authentication process.
     const token = session.id_token;
 
@@ -72,7 +70,7 @@ const config = {
     // Add user to the database
     await addUserToDatabase(payload);
 
-    console.log(payload);
+    // console.log(payload);
 
     // Check user's email.
     // if (payload.email !== process.env.EMAIL) {

@@ -9,6 +9,9 @@ const requirePermission = (permission, redirectPath = "/access-denied") => {
     }
 
     const decoded = jwt.decode(token);
+
+    // console.log(decoded);
+
     const permissions = decoded.permissions || decoded.scope?.split(" ") || [];
 
     if (permissions.includes(permission)) {
