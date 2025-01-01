@@ -52,10 +52,32 @@ const addUserToDatabase = async (payload) => {
     const encryptedEmail = encrypt(email);
     const encryptedName = encrypt(name);
     const encryptedNickname = encrypt(nickname);
-    const encryptedGiven_name = encrypt(given_name);
+    const encryptedGiven_name = encrypt(
+      given_name ||
+        nickname.substring(0, 1).toUpperCase() + nickname.substring(1)
+    );
     const encryptedSub = encrypt(sub);
     const encryptedSid = encrypt(sid);
     const encryptedNonce = encrypt(nonce);
+
+    // const encryptedEmail = email;
+    // const encryptedName = name;
+    // const encryptedNickname = nickname;
+    // const encryptedGiven_name =
+    //   given_name ||
+    //   nickname.substring(0, 1).toUpperCase() + nickname.substring(1);
+    // const encryptedSub = sub;
+    // const encryptedSid = sid;
+    // const encryptedNonce = nonce;
+
+    console.log("-------------");
+    console.log(typeof encryptedEmail);
+    console.log(typeof encryptedName);
+    console.log(typeof encryptedNickname);
+    console.log(typeof encryptedGiven_name);
+    console.log(typeof encryptedSub);
+    console.log(typeof encryptedSid);
+    console.log(typeof encryptedNonce);
 
     await pool.query(addUserQuery, [
       encryptedSub,

@@ -7,6 +7,7 @@ const {
   claimIncludes,
   claimCheck,
 } = require("express-openid-connect");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -17,6 +18,7 @@ const {
 const { requireClaim } = require("../helpers/require-claim");
 const pool = require("../config/db");
 const { encrypt, decrypt } = require("../cryptography/encrypt-decrypt");
+const { requirePermission } = require("../helpers/require-permission");
 
 router.use((req, res, next) => {
   if (req.path === "/access-denied") {
@@ -123,7 +125,8 @@ router.get("/login", (req, res) => {
 router.get(
   "/admin",
   // Here was the `claimEquals` function.
-  requireClaim("email", "a" + process.env.EMAIL), // Middleware to check the claim.
+  // requireClaim("email", "" + process.env.EMAIL), // Middleware to check the claim.
+  requirePermission("admin:access"), // Check if the user has `admin:access` scope/permission.
   (req, res) => {
     res.send(`Hello ${req.oidc.user.name}, this is the admin section.`);
   }

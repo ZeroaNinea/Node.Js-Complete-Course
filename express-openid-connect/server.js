@@ -8,6 +8,7 @@ const base64Url = require("base64url");
 // const MemoryStore = require('memorystore')(auth); // Hey girl, you need to install the `memorystore` module if you want to run it.
 const { createClient } = require("redis");
 const { RedisStore } = require("connect-redis");
+const jwt = require("jsonwebtoken");
 
 const router = require("./routes/index");
 const pool = require("./config/db");
@@ -56,25 +57,27 @@ const config = {
     response_type: "code",
     audience: "https://fakestoreapi.com/products",
     // audience: "https://api.escuelajs.co/api/v1/products",
-    scope: "openid profile email read:products",
+    scope: "openid profile email read:products admin:access",
     // prompt: "consent", // Requires consent of the user.
   },
   afterCallback: async (req, res, session) => {
+    const namespace = "https://express-openid-connect.com/";
+
     // The `afterCallback` hook validates specific claims in the user's ID token after the authentication process.
     const token = session.id_token;
 
     // Decode the token payload.
     const payload = JSON.parse(base64Url.decode(token.split(".")[1]));
 
-    console.log(payload);
-
     // Add user to the database
     await addUserToDatabase(payload);
 
+    console.log(payload);
+
     // Check user's email.
-    if (payload.email !== "zeroaninea@gmail.com") {
-      throw new Error("Unauthorized email");
-    }
+    // if (payload.email !== process.env.EMAIL) {
+    //   throw new Error("Unauthorized email");
+    // }
 
     return session;
   },
