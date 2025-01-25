@@ -43,6 +43,20 @@ clinic doctor --autocannon [ / ] -- node sync-io
 
 ```
 
+Replace `show-event-loop` with your file. Run Clinic Doctor with a report and automatically define the port:
+
+```bash
+clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
+
+```
+
+Find the slowest part of code:
+
+```bash
+clinic flame --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
+
+```
+
 ## License
 
 [Apache 2.0](<https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)>)
