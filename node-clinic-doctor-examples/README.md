@@ -2,6 +2,8 @@
 
 I'm using this subdirectory to learn Clinic.js. You can find the [`Angular-Complete-Course`](https://github.com/ZeroaNinea/Angular-Complete-Course/tree/main/jasmine-karma-documentation) repository here.
 
+I used the [official documentation](https://clinicjs.org/documentation/) to learn Clinic.js.
+
 Server examples for `clinic`
 
 ```bash
