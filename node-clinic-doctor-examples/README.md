@@ -47,14 +47,12 @@ Replace `show-event-loop` with your file. Run Clinic Doctor with a report and au
 
 ```bash
 clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
-
 ```
 
 Find the slowest part of code:
 
 ```bash
 clinic flame --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
-
 ```
 
 ## License
