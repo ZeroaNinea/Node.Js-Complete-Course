@@ -4,38 +4,43 @@ I'm using this subdirectory to learn Clinic.js. You can find the [`Angular-Compl
 
 Server examples for `clinic`
 
-```
+```bash
 git clone git@github.com:nearform/node-clinic-doctor-examples.git
 cd node-clinic-doctor-examples
 npm install
 npm install -g clinic
 npm install -g autocannon
+
 ```
 
 ## Examples
 
 ### Event Loop
 
-```
+```bash
 clinic doctor --autocannon [ / ] -- node slow-event-loop
+
 ```
 
 ### GC
 
-```
+```bash
 clinic doctor --autocannon [ -c 2500 / ] -- node slow-gc
+
 ```
 
 ### I/O
 
-```
+```bash
 clinic doctor --autocannon [ / ] -- node slow-io
+
 ```
 
 ### Sync I/O
 
-```
+```bash
 clinic doctor --autocannon [ / ] -- node sync-io
+
 ```
 
 ## License
