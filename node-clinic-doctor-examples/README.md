@@ -57,6 +57,17 @@ Find the slowest part of code:
 clinic flame --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
 ```
 
+Test with `bubbleprof`:
+
+- **Bubbles**: Represent different async operations.
+- **Arrows**: Show relationships and how operations flow (e.g., one callback triggering another).
+- **Bubble Size**: Indicates the time spent in that operation.
+- **Arrows Width**: Shows the frequency of transitions between operations.
+
+```bash
+clinic bubbleprof --on-port 'autocannon localhost:$PORT' -- node slow-io
+```
+
 ## License
 
 [Apache 2.0](<https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)>)
