@@ -9,7 +9,7 @@ function sleep(ms) {
 }
 
 server.get("/", function (req, res, next) {
-  sleep(1);
+  sleep(30);
   res.send({});
   next();
 });
