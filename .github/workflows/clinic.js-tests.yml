@@ -18,11 +18,11 @@ jobs:
         working-directory: ./node-clinic-doctor-examples
         run: npm install
 
-      - name: Install and Run HTTP Server
-        working-directory: ./node-clinic-doctor-examples
-        run: |
-          npm install -g http-server
-          http-server ./node-clinic-doctor-examples/slow-event-loop -p 3000 --gzip &
+      # - name: Install and Run HTTP Server
+      #   working-directory: ./node-clinic-doctor-examples
+      #   run: |
+      #     npm install -g http-server
+      #     http-server ./node-clinic-doctor-examples/slow-event-loop -p 3000 --gzip &
 
       - name: Install and Run Clinic.js
         working-directory: ./node-clinic-doctor-examples
