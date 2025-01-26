@@ -24,9 +24,12 @@ jobs:
       #     npm install -g http-server
       #     http-server ./node-clinic-doctor-examples/slow-event-loop -p 3000 --gzip &
 
-      - name: Install and Run Clinic.js
+      - name: Install Clinic.js
         working-directory: ./node-clinic-doctor-examples
         run: |
           npm install -g clinic
           npm install -g autocannon
-          clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
+
+      - name: Run Clinic.js
+        working-directory: ./node-clinic-doctor-examples
+        run: clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
