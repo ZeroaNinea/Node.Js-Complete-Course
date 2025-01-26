@@ -1,5 +1,5 @@
 # name: Clinic.js Tests
-# run-name: This tests were ran by the cutest thing in the entire universe! ÒωÓ
+# run-name: This test was run by the cutest thing in the entire universe! ÒωÓ
 # on:
 #   push:
 #     branches:
@@ -10,6 +10,7 @@
 #     runs-on: ubuntu-latest
 #     steps:
 #       - uses: actions/checkout@v4
+
 #       - name: Set up Node.js
 #         uses: actions/setup-node@v4
 #         with:
@@ -19,18 +20,18 @@
 #         working-directory: ./node-clinic-doctor-examples
 #         run: npm install
 
-#       - name: Install and Run HTTP Server
+#       - name: Run Clinic.js Doctor
 #         working-directory: ./node-clinic-doctor-examples
 #         run: |
-#           npm install -g http-server
-#           http-server ./node-clinic-doctor-examples/slow-event-loop -p 4000 --gzip &
+#           npm install -g clinic autocannon
+#           mkdir -p results
+#           clinic doctor --on-port 'autocannon localhost:3000' -- node slow-event-loop --dest results
 
-#       - name: Install and Run Clinic.js
-#         working-directory: ./node-clinic-doctor-examples
-#         run: |
-#           npm install -g clinic
-#           npm install -g autocannon
-#           clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
+#       - name: Upload Results
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: clinic-results
+#           path: ./node-clinic-doctor-examples/results
 
 name: Clinic.js Tests
 run-name: This test was run by the cutest thing in the entire universe! ÒωÓ
@@ -59,7 +60,10 @@ jobs:
         run: |
           npm install -g clinic autocannon
           mkdir -p results
-          clinic doctor --on-port 'autocannon localhost:3000' -- node slow-event-loop --dest results
+          clinic doctor --on-port 'autocannon localhost:3000 --duration 10' -- node slow-event-loop --dest results
+
+      - name: Check Results Directory
+        run: ls -la ./node-clinic-doctor-examples/results
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
