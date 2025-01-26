@@ -1,39 +1,3 @@
-# name: Clinic.js Tests
-# run-name: This test was run by the cutest thing in the entire universe! ÒωÓ
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
-# jobs:
-#   tests:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: "22"
-#       - name: Install Dependencies
-#         working-directory: ./node-clinic-doctor-examples
-#         run: npm install
-
-#       - name: Install Clinic.js
-#         working-directory: ./node-clinic-doctor-examples
-#         run: |
-#           npm install -g clinic
-#           npm install -g autocannon
-
-#       - name: Run Clinic.js
-#         working-directory: ./node-clinic-doctor-examples
-#         run: clinic doctor --dest ./completed-tests --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
-
-#       - name: Upload Results
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: clinic-results
-#           path: ./node-clinic-doctor-examples
-
 name: Clinic.js Tests
 run-name: This test was run by the cutest thing in the entire universe! ÒωÓ
 on:
@@ -45,41 +9,27 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Check out the code
       - uses: actions/checkout@v4
-
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      # Step 3: Install dependencies
       - name: Install Dependencies
         working-directory: ./node-clinic-doctor-examples
         run: npm install
 
-      # Step 4: Install Clinic.js and Autocannon
       - name: Install Clinic.js
-        run: npm install -g clinic autocannon
-
-      # Step 5: Run Clinic.js Doctor
-      - name: Run Clinic.js Doctor
         working-directory: ./node-clinic-doctor-examples
         run: |
-          mkdir -p ./results
-          clinic doctor \
-            --dest ./results \
-            --on-port 'autocannon localhost:3000 --duration 10' \
-            -- node slow-event-loop
+          npm install -g clinic
+          npm install -g autocannon
 
-      # Step 6: Debug the output directory
-      - name: List Results
-        run: ls -la ./node-clinic-doctor-examples/results
+      - name: Run Clinic.js
+        working-directory: ./node-clinic-doctor-examples
+        run: clinic doctor --dest ./completed-tests --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
 
-      # Step 7: Upload results as artifacts
       - name: Upload Results
         uses: actions/upload-artifact@v4
         with:
           name: clinic-results
-          path: ./node-clinic-doctor-examples/results
+          path: ./node-clinic-doctor-examples
