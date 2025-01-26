@@ -62,7 +62,7 @@ jobs:
           clinic doctor --on-port 'autocannon localhost:3000' -- node slow-event-loop --dest results
 
       - name: Upload Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: clinic-results
           path: ./node-clinic-doctor-examples/results
