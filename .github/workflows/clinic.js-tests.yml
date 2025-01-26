@@ -1,0 +1,20 @@
+name: Clinic.js Tests
+run-name: This tests were ran by the cutest thing in the entire universe! ÒωÓ
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        working-directory: ./node-clinic-doctor-examples
+        run: npm install
