@@ -38,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: clinic-results
-          path: ./node-clinic-doctor-examples/.clinic
+          path: ./node-clinic-doctor-examples
