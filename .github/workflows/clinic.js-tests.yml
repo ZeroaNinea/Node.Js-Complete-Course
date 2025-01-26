@@ -18,12 +18,6 @@ jobs:
         working-directory: ./node-clinic-doctor-examples
         run: npm install
 
-      # - name: Install and Run HTTP Server
-      #   working-directory: ./node-clinic-doctor-examples
-      #   run: |
-      #     npm install -g http-server
-      #     http-server ./node-clinic-doctor-examples/slow-event-loop -p 3000 --gzip &
-
       - name: Install Clinic.js
         working-directory: ./node-clinic-doctor-examples
         run: |
@@ -32,10 +26,10 @@ jobs:
 
       - name: Run Clinic.js
         working-directory: ./node-clinic-doctor-examples
-        run: clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
+        run: clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop --dist results
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
         with:
           name: clinic-results
-          path: ./node-clinic-doctor-examples
+          path: ./node-clinic-doctor-examples/results
