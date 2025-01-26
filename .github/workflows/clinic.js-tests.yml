@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Clinic.js
         working-directory: ./node-clinic-doctor-examples
-        run: clinic doctor --on-port 'autocannon localhost:$PORT' -- node slow-event-loop --dist results
+        run: clinic doctor --dest ./results --on-port 'autocannon localhost:$PORT' -- node slow-event-loop
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
